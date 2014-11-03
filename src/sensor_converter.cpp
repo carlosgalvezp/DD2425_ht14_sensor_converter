@@ -7,7 +7,7 @@
 #include <fstream>
 
 const std::string NODE_NAME     = "sensor_converter";
-const std::string ADC_SUB_NAME  = "/kobuki/adc";
+const std::string ADC_SUB_NAME  = "/arduino/adc";// "/kobuki/adc";
 
 const int LOOP_SIZE = 100;
 
@@ -52,12 +52,10 @@ public:
         int skip_counter = 0;
 
         while(ros::ok() && accumilate_counter < loop_size) {
-
             if(adc_value == 0) {
                 //we have no input yet, do nothing
             }else if(skip_counter < SKIP_INIT_VALUES) {
                 skip_counter++;
-                continue;
             } else {
                 adc_accumilate_value += adc_value;
                 accumilate_counter++;
