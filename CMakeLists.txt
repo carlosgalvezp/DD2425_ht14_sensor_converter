@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-#set(CMAKE_CXX_FLAGS "-std=c++0x -Wall ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
 project(sensor_converter)
 
 ## Find catkin macros and libraries
@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  ras_utils
 )
 
 ## System dependencies are found with CMake's conventions
