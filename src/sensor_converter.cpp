@@ -69,7 +69,7 @@ public:
 
 
 
-        ROS_INFO("distance: %d  adc_avarage: %lf  accumilated: %d", distance, adc_avarage, accumilate_counter);
+        ROS_INFO("distance: %d  adc_avarage: %lf  accumilated: %ld", distance, adc_avarage, accumilate_counter);
 
         // Open the files for output
         file_adc.open(ADC_FILE_FULL_PATH.c_str(), std::ios_base::app);
