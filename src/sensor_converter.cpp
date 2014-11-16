@@ -94,7 +94,7 @@ private:
 
     void adcCallback(const ras_arduino_msgs::ADConverter::ConstPtr& msg) {
         // Note that we only use the sensor on channel one (ch1), which is the front-left on the robot.
-        adc_value = msg->ch1;
+        adc_value = msg->ch8;
     }
 };
 
