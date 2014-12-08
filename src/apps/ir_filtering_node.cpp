@@ -45,15 +45,15 @@ int main(int argc, char* argv[])
 
 IR_Filtering::IR_Filtering()
 {
-    // ** Subscribers
-    adc_sub_ = n.subscribe(TOPIC_ARDUINO_ADC_RAW, 1, &IR_Filtering::adcCallback, this);
+//    // ** Subscribers
+//    adc_sub_ = n.subscribe(TOPIC_ARDUINO_ADC_RAW, 1, &IR_Filtering::adcCallback, this);
 
-    // ** Publishers
-    ir_pub_           = n.advertise<ras_srv_msgs::IRData>(TOPIC_ARDUINO_ADC, 10);
-    ir_no_filter_pub_ = n.advertise<ras_srv_msgs::IRData>(TOPIC_ARDUINO_M_NOT_FILTERED, 10);
+//    // ** Publishers
+//    ir_pub_           = n.advertise<ras_srv_msgs::IRData>(TOPIC_ARDUINO_ADC, 10);
+//    ir_no_filter_pub_ = n.advertise<ras_srv_msgs::IRData>(TOPIC_ARDUINO_M_NOT_FILTERED, 10);
 
-    // ** Init KF
-    initializeKF();
+//    // ** Init KF
+//    initializeKF();
 }
 
 void IR_Filtering::adcCallback(const ras_arduino_msgs::ADConverterConstPtr &adc_msg)
