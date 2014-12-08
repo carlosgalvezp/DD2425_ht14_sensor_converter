@@ -10,6 +10,8 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   ras_utils
+  ras_arduino_msgs
+  ras_srv_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -164,9 +166,15 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
+# Eigen
+find_package(Eigen REQUIRED)
+include_directories(${EIGEN_INCLUDE_DIRS})
+
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-file(GLOB SOURCES src/*.cpp)
 file(GLOB HEADERS src/*.h)
-add_executable(sensor_converter ${SOURCES} ${HEADERS})
+add_executable(sensor_converter src/apps/sensor_converter.cpp ${HEADERS})
 target_link_libraries(sensor_converter ${catkin_LIBRARIES})
+
+add_executable(ir_filtering src/apps/ir_filtering_node.cpp ${HEADERS})
+target_link_libraries(ir_filtering ${catkin_LIBRARIES})
