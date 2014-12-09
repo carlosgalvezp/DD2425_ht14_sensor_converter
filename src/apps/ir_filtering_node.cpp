@@ -9,9 +9,11 @@
 #include <ras_utils/kalman_filter.h>
 #include <ras_utils/ras_sensor_utils.h>
 
+#include <fstream>
+
 // Kalman Filter parameters
-#define QSHORT 0.05          // Sensor noise for short range [m]
-#define QLONG  0.05          // Sensor noise for long range  [m]
+#define QSHORT 0.2          // Sensor noise for short range [m]
+#define QLONG  0.2          // Sensor noise for long range  [m]
 #define R0     0.1           // Process noise [m]
 #define SIGMA_0 100.0        // Initial uncertainty
 
@@ -31,6 +33,8 @@ private:
 
     void initializeKF();
 
+    std::ofstream fshort, flong;
+
 };
 
 
@@ -45,15 +49,18 @@ int main(int argc, char* argv[])
 
 IR_Filtering::IR_Filtering()
 {
-//    // ** Subscribers
-//    adc_sub_ = n.subscribe(TOPIC_ARDUINO_ADC_RAW, 1, &IR_Filtering::adcCallback, this);
+    // ** Subscribers
+    adc_sub_ = n.subscribe(TOPIC_ARDUINO_ADC, 1, &IR_Filtering::adcCallback, this);
 
-//    // ** Publishers
-//    ir_pub_           = n.advertise<ras_srv_msgs::IRData>(TOPIC_ARDUINO_ADC, 10);
-//    ir_no_filter_pub_ = n.advertise<ras_srv_msgs::IRData>(TOPIC_ARDUINO_M_NOT_FILTERED, 10);
+    // ** Publishers
+    ir_pub_           = n.advertise<ras_srv_msgs::IRData>(TOPIC_ARDUINO_ADC_FILTERED, 10);
+    ir_no_filter_pub_ = n.advertise<ras_srv_msgs::IRData>(TOPIC_ARDUINO_ADC_NOT_FILTERED, 10);
 
-//    // ** Init KF
-//    initializeKF();
+    // ** Init KF
+    initializeKF();
+
+    fshort.open("/home/ras/ir_short.txt");
+    flong.open("/home/ras/ir_long.txt");
 }
 
 void IR_Filtering::adcCallback(const ras_arduino_msgs::ADConverterConstPtr &adc_msg)
@@ -61,12 +68,13 @@ void IR_Filtering::adcCallback(const ras_arduino_msgs::ADConverterConstPtr &adc_
     // ** Get raw data
     Eigen::VectorXd z_front_right(1), z_back_right(1), z_front_left(1), z_back_left(1), z_front(1), z_back(1);
 
-    z_front_right << RAS_Utils::sensors::shortSensorToDistanceInCM(adc_msg->ch1) * 0.01;
-    z_back_right  << RAS_Utils::sensors::shortSensorToDistanceInCM(adc_msg->ch2) * 0.01;
-    z_back_left   << RAS_Utils::sensors::shortSensorToDistanceInCM(adc_msg->ch3) * 0.01;
-    z_front_left  << RAS_Utils::sensors::shortSensorToDistanceInCM(adc_msg->ch4) * 0.01;
-    z_front       << RAS_Utils::sensors::longSensorToDistanceInCM(adc_msg->ch7) * 0.01;
-    z_back        << RAS_Utils::sensors::longSensorToDistanceInCM(adc_msg->ch8) * 0.01;
+    z_front_left << RAS_Utils::sensors::shortSensorToDistanceInCM(adc_msg->ch1) * 0.01;
+    z_back_left  << RAS_Utils::sensors::shortSensorToDistanceInCM(adc_msg->ch2) * 0.01;
+    z_back_right   << RAS_Utils::sensors::shortSensorToDistanceInCM(adc_msg->ch3) * 0.01;
+    z_front_right  << RAS_Utils::sensors::shortSensorToDistanceInCM(adc_msg->ch4) * 0.01;
+    z_back       << RAS_Utils::sensors::longSensorToDistanceInCM(adc_msg->ch7) * 0.01;
+    z_front        << RAS_Utils::sensors::longSensorToDistanceInCM(adc_msg->ch8) * 0.01;
+
 
     ras_srv_msgs::IRData msg_not_filtered;
     msg_not_filtered.front_right = z_front_right(0);
@@ -95,6 +103,11 @@ void IR_Filtering::adcCallback(const ras_arduino_msgs::ADConverterConstPtr &adc_
     msg_filtered.back_left   = f_back_left(0);
     msg_filtered.front       = f_front(0);
     msg_filtered.back        = f_back(0);
+
+
+
+//    flong << z_front(0)<< " " <<f_front(0)<<std::endl;
+//    fshort << z_front_right(0)<< " " <<f_front_right(0)<<std::endl;
 
     // ** Publish msgs
     ir_pub_.publish(msg_filtered);
