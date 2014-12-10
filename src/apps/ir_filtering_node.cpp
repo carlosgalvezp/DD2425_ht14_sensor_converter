@@ -53,8 +53,8 @@ IR_Filtering::IR_Filtering()
     adc_sub_ = n.subscribe(TOPIC_ARDUINO_ADC, 1, &IR_Filtering::adcCallback, this);
 
     // ** Publishers
-    ir_pub_           = n.advertise<ras_srv_msgs::IRData>(TOPIC_ARDUINO_ADC_FILTERED, 10);
-    ir_no_filter_pub_ = n.advertise<ras_srv_msgs::IRData>(TOPIC_ARDUINO_ADC_NOT_FILTERED, 10);
+    ir_pub_           = n.advertise<ras_srv_msgs::IRData>(TOPIC_ARDUINO_ADC_FILTERED, 1);
+    ir_no_filter_pub_ = n.advertise<ras_srv_msgs::IRData>(TOPIC_ARDUINO_ADC_NOT_FILTERED, 1);
 
     // ** Init KF
     initializeKF();
