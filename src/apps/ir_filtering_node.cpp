@@ -72,8 +72,8 @@ void IR_Filtering::adcCallback(const ras_arduino_msgs::ADConverterConstPtr &adc_
     z_back_left  << RAS_Utils::sensors::shortSensorToDistanceInCM(adc_msg->ch2) * 0.01;
     z_back_right   << RAS_Utils::sensors::shortSensorToDistanceInCM(adc_msg->ch3) * 0.01;
     z_front_right  << RAS_Utils::sensors::shortSensorToDistanceInCM(adc_msg->ch4) * 0.01;
-    z_back       << RAS_Utils::sensors::longSensorToDistanceInCM(adc_msg->ch7) * 0.01;
-    z_front        << RAS_Utils::sensors::longSensorToDistanceInCM(adc_msg->ch8) * 0.01;
+    z_back         << RAS_Utils::sensors::longSensorToDistanceInCM(adc_msg->ch7) * 0.01 + 0.088;
+    z_front        << RAS_Utils::sensors::longSensorToDistanceInCM(adc_msg->ch8) * 0.01 + 0.088;
 
 
     ras_srv_msgs::IRData msg_not_filtered;
@@ -93,7 +93,7 @@ void IR_Filtering::adcCallback(const ras_arduino_msgs::ADConverterConstPtr &adc_
     kf_short_[3].filter(z_back_left,   f_back_left);
 
     kf_long_[0].filter(z_front, f_front);
-    kf_long_[1].filter(z_front, f_front);
+    kf_long_[1].filter(z_back, f_back);
 
     // ** Output filtered data
     ras_srv_msgs::IRData msg_filtered;
